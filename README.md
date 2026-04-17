@@ -51,6 +51,33 @@ You need the following:
 - To detect if a DNS request is redirected, a fake domain on your local router is required because this inspector cannot use the `Source IP` from the DNS response packet to determine if a request has been redirected as this information is lost in the discovery process of the **netdns2** library.
 - Do not update **netdns2** via composer as this will remove the `DoH` peer verification relaxation workaround.
 
+## Example Code
+n/a
+
+## Screenshots
+
+### Form
+
+![Form](images/form.webp)
+
+### Results
+
+![Results](images/results.webp)
+
+## Results Explained
+
+- **Internal**
+  -  DNS requests sent to servers on your local network.
+- **External**
+  - DNS requests sent to servers on the internet.
+- **Verified**
+  - SSL/TLS certificates and hostnames are verified.
+  - This only applies to `Dot` and `DoH`.
+- **Unerified**
+  - SSL/TLS certificates and hostnames are not verified.
+  - This only applies to `Dot` and `DoH`.
+  - This will allow you to test a servers response when they are using `self-signed` certificates.
+
 ## Limitations
 - The `DoT` test has a workaround applied to show connections errors with servers that have `self-signed certificates`.
   - This is and issue with **netdns2** and I have reported the issue here [netdns2: DoT - Nameserver with Self Signed Certificate does not generate any errors when verify peers is enabled](https://github.com/mikepultz/netdns2/issues/182)
