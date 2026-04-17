@@ -372,7 +372,6 @@ class Inspector {
 
         $this->output .= <<<BOTTOMBLOCK
 
-        <div>License = don't know yet</div>
 
         BOTTOMBLOCK;
     }
