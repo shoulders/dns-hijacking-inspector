@@ -1,0 +1,5 @@
+/.vscode/
+/localonly/
+/nbproject/
+/vendor/
+/.php_cs.cache

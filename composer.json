@@ -1,0 +1,5 @@
+{
+  "require": {
+    "mikepultz/netdns2":"^2.0"
+  }
+}
