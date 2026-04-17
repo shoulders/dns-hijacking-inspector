@@ -9,29 +9,31 @@ Once the test is complete it will give you an analysis of the tests with specifi
 
 ## Prerequsites
 You need the following:
-- Your router must support Host overrides or have a hosts file you can edit.
+- Your router must support `Domain Overrides` or have a `hosts file` you can edit.
 - Webserver
   - on your local network
   - running PHP 8.1+
 - PHP must have the following extensions installed and loaded
   - OpenSSL
   - cURL
+  - Hash
   - Intl
 
 ## How to use this software
-- Add a fake domain to your routers DNS server host overrides (e.g. madeup123abc.com / 10.0.0.50)
-- Extract to a folder of your choice on your Webserver
-- Check over the options in `inspector.php` and configure as needed
+- Add a fake domain to your routers DNS server `Domain Overrides` or `hosts file` (e.g. `madeup123abc.com` / `10.0.0.50`)
+- Extract `dns-hijacking-inspecto` to a folder of your choice on your Webserver
+- Configure the settings in `inspector.php` as required
 - Load `inspector.php`
 - Read the results
 
 ## Configuration Options
 
-### Script only
-- **$useForm (boolean):** If this is enabled then a form will appear for you to manually enter your details, otherwise the script will pull them directly from the script and automatically run.
+### Script Only
+- **$useForm (boolean):** Show the form
+  - If this is enabled, then a form will appear for you to manually enter your details, otherwise the script will pull them directly from the it's settings and then automatically run itself.
 
 ### Script and Form
-- **Test Domain:** This is the fake non-existant domain in your routers host file that your need to test for DNS request redirects.
+- **Test Domain:** This is the fake non-existant domain defined in your routers `Domain Overrides` or `hosts file` which is needed to test for DNS request redirects.
 - **Nameserver Internal Standard:** The IP address of a `Standard DNS (53)` server on your local network.
   - This is most likely your router's IP.
 - **Nameserver Internal DoT:** The IP address of a `DoT (853)` server on your local network.
@@ -47,6 +49,7 @@ You need the following:
 ## Notes
 - The `DoH` test only checks the domain supplied, so this test alone cannot indicated if all `DoH` requests are blocked or redirected. this test though can prove that your DNSBL is being applied as expected.
 - To detect if a DNS request is redirected, a fake domain on your local router is required because this inspector cannot use the `Source IP` from the DNS response packet to determine if a request has been redirected as this information is lost in the discovery process of the **netdns2** library.
+- Do not update **netdns2** via composer as this will remove the `DoH` peer verification relaxation workaround.
 
 ## Limitations
 - The `DoT` test has a workaround applied to show connections errors with servers that have `self-signed certificates`.
@@ -61,14 +64,14 @@ You need the following:
 This will work on most computers.
 
 ## License
-This software is developed by QuantumWarp and released under the GNU General Public License 33
+This software is developed by QuantumWarp and released under the GNU General Public License v3
 
 ## Learn More
-Visit the extension's software page at: https://quantumwarp.com/projects/
+Visit this software's page at: https://github.com/shoulders/dns-hijacking-inspector
 
 ## Dependencies
 I used the following packages to build this software.
-- [netdns2](https://github.com/mikepultz/netdns2) - PHP DNS Resolver and Updater
+- [netdns2 - PHP DNS Resolver and Updater](https://github.com/mikepultz/netdns2)
   - The NetDNS2 library is a pure PHP DNS Resolver library, that supports local caching, dynamic DNS updates, and almost every feature currently supported by modern DNS servers.
   - Supports DNS, DoT, DoH
   - Support for IPv4 and IPv6, UDP, TCP, and TLS sockets.
@@ -78,7 +81,7 @@ I used the following packages to build this software.
 I used the following information and links to build this software.
 - [Local network DNS Hijacking detection | GRC Forum](https://forums.grc.com/threads/local-network-dns-hijacking-detection.2383/)
   - It might be nice to get these Hijacking tests added in to the DNS Benchmark utility.
-- Some other Packages I looled at
+- Some other Packages I looked at
   - [Pure-PHP-DoH-Client](https://github.com/LJPc-solutions/Pure-PHP-DoH-Client)
     - Retrieve DNS records via DoH in PHP. This library finally makes it easy to query DNS records in PHP without any third party extensions.
   - [phpdns](https://github.com/purplepixie/phpdns)

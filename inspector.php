@@ -8,21 +8,19 @@
 
 class Inspector {
 
-    // Testing values
-    private $testDomain = 'madeup123abc.com';
-    private $nameserverInternalStandard = '10.0.0.1';
-    private $nameserverInternalDot = '10.0.0.1';
-    private $nameserverInternalDoh = 'https://10.0.0.1/dns-query';
-    private $nameserverExternalStandard = '9.9.9.9';
-    private $nameserverExternalDot = '9.9.9.9';
-    private $nameserverExternalDoh = 'https://dns.quad9.net/dns-query';
-
     // Settings
-    private $useForm = true;
+    private $useForm                    = true;
+    private $testDomain                 = 'madeup123abc.com';
+    private $nameserverInternalStandard = '10.0.0.1';
+    private $nameserverInternalDot      = '10.0.0.1';
+    private $nameserverInternalDoh      = 'https://10.0.0.1/dns-query';
+    private $nameserverExternalStandard = '9.9.9.9';
+    private $nameserverExternalDot      = '9.9.9.9';
+    private $nameserverExternalDoh      = 'https://dns.quad9.net/dns-query';
 
     // Prerequsites
     private $minimumPhpVersion = '8.1';
-    private $requiredPhpExtensions = ['openssl','curl','intl'];
+    private $requiredPhpExtensions = ['openssl','curl', 'hash', 'intl'];
 
     // Holding Variables
     private $results = array();
@@ -98,16 +96,16 @@ class Inspector {
     private function processData(){
 
         // Build results matrix
-        $this->results['internalStandard']        = $this->dnsRequest('internal', 'standard', $this->nameserverInternalStandard, $this->testDomain);
-        $this->results['internalDot']             = $this->dnsRequest('internal', 'dot', $this->nameserverInternalDot, $this->testDomain);
-        $this->results['internalDotUnverified']   = $this->dnsRequest('internal', 'dot', $this->nameserverInternalDot, $this->testDomain, false);
-        $this->results['internalDoh']             = $this->dnsRequest('internal', 'doh', $this->nameserverInternalDoh, $this->testDomain);
-        $this->results['internalDohUnverified']   = $this->dnsRequest('internal', 'doh', $this->nameserverInternalDoh, $this->testDomain, false);
-        $this->results['externalStandard']        = $this->dnsRequest('external', 'standard', $this->nameserverExternalStandard, $this->testDomain);
-        $this->results['externalDot']             = $this->dnsRequest('external', 'dot', $this->nameserverExternalDot, $this->testDomain);
-        $this->results['externalDotUnverified']   = $this->dnsRequest('external', 'dot', $this->nameserverExternalDot, $this->testDomain, false);
-        $this->results['externalDoh']             = $this->dnsRequest('external', 'doh', $this->nameserverExternalDoh, $this->testDomain);
-        $this->results['externalDohUnverified']   = $this->dnsRequest('external', 'doh', $this->nameserverExternalDoh, $this->testDomain, false);
+        $this->results['internalStandard']        = $this->dnsRequest('internal', 'standard',   $this->nameserverInternalStandard,  $this->testDomain);
+        $this->results['internalDot']             = $this->dnsRequest('internal', 'dot',        $this->nameserverInternalDot,       $this->testDomain);
+        $this->results['internalDotUnverified']   = $this->dnsRequest('internal', 'dot',        $this->nameserverInternalDot,       $this->testDomain, false);
+        $this->results['internalDoh']             = $this->dnsRequest('internal', 'doh',        $this->nameserverInternalDoh,       $this->testDomain);
+        $this->results['internalDohUnverified']   = $this->dnsRequest('internal', 'doh',        $this->nameserverInternalDoh,       $this->testDomain, false);
+        $this->results['externalStandard']        = $this->dnsRequest('external', 'standard',   $this->nameserverExternalStandard,  $this->testDomain);
+        $this->results['externalDot']             = $this->dnsRequest('external', 'dot',        $this->nameserverExternalDot,       $this->testDomain);
+        $this->results['externalDotUnverified']   = $this->dnsRequest('external', 'dot',        $this->nameserverExternalDot,       $this->testDomain, false);
+        $this->results['externalDoh']             = $this->dnsRequest('external', 'doh',        $this->nameserverExternalDoh,       $this->testDomain);
+        $this->results['externalDohUnverified']   = $this->dnsRequest('external', 'doh',        $this->nameserverExternalDoh,       $this->testDomain, false);
 
         // Calculate if DNS Hijacking was successful
         foreach($this->results as $key => $value){
@@ -185,17 +183,6 @@ class Inspector {
                 $this->testDomainIpsDisplayString = str_replace('<br>', ', ', $addressesDisplayString);
             }
 
-            /* Build Display Message based on if the Response from a redirected source
-            // $res->answer_from - This is the nameserver from the $nameserver array used to make the request, not the source IP on the packet
-            // see https://github.com/mikepultz/netdns2/issues/183
-            if($nameserver != $res->answer_from){
-                $result['displayMsg'] = '<span style="color: orange;">'.$res->answer[0]->address.'</span>';
-                $result['status'] = 'success';
-            } else {
-                $result['displayMsg'] = '<span style="color: green;">'.$res->answer[0]->address.'</span>';
-                $result['status'] = 'failed';
-            }*/
-
             // Build Display Message based on if the Response from a redirected source
             // This test is a workaround test because I cannot get the Source IP from the DNS response packet
             // If I could read the Source IP then I might not need the non-existant domain congigured
@@ -207,16 +194,16 @@ class Inspector {
                 $result['displayMsg'] = '<span style="color: green;">'.$addressesDisplayString.'</span>';
                 $result['status'] = 'success';
             }
+        }
 
-
-        } catch(\NetDNS2\Exception $e)
+        catch(\NetDNS2\Exception $e)
         {
             // Workaround for GitHub #182 (DoH uses cURL so is not an issue)
             if($requestType === 'dot' && $verifyPeer && empty($e->getMessage())){
                 $workaround = 'No Native error, most likely:<br><br>Error [tls]: A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider. (os error -2146762487)';
             }
 
-            // Set NXDOMAIN as needed (I do it this way becasue I do not know how to get test NXDOMAIN from the response)
+            // Set NXDOMAIN as needed (I do it this way because I do not know how to get test NXDOMAIN from the response)
             if($e->getMessage() == 'DNS request failed: The domain name referenced in the query does not exist.'){
                 $result['NXDOMAIN'] = true;
             }
@@ -250,7 +237,7 @@ class Inspector {
                 .legendBlocks.failed{background-color: red;}
             </style>
             <div id="githubLink" style="float:right;">
-            <a href="https://github.com/shoulders/mysql-slow-query-log-visualizer" target="_blank" rel="noopener">
+            <a href="https://github.com/shoulders/dns-hijacking-inspector" target="_blank" rel="noopener">
             <img src="images/github-mark.png" alt="GitHub" style="width:50px;"><br>Instructions
             </a>
             </div>
@@ -282,10 +269,7 @@ class Inspector {
             <tbody>
             <tr>
             <td><label for="testDomain">Test Domain:</label></td>
-            <td>
-            <input type="text" name="testDomain" value="$this->testDomain" placeholder="madeup123abc.com" required>
-            This must be a fake non-existant domain in your routers host file to test for DNS request redirects.
-            </td>
+            <td><input type="text" name="testDomain" value="$this->testDomain" placeholder="madeup123abc.com" required></td>
             </tr>
             <tr>
             <td><label for="nameserverInternalStandard">Nameserver Internal Standard:</label></td>
