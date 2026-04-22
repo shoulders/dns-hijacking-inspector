@@ -80,12 +80,12 @@ n/a
 
 ## Limitations
 - The `DoT` test has a workaround applied to show connections errors with servers that have `self-signed certificates`.
-  - This is and issue with **netdns2** and I have reported the issue here [netdns2: DoT - Nameserver with Self Signed Certificate does not generate any errors when verify peers is enabled](https://github.com/mikepultz/netdns2/issues/182)
+  - This is an issue with **netdns2** and I have reported the issue here [netdns2: DoT - Nameserver with Self Signed Certificate does not generate any errors when verify peers is enabled](https://github.com/mikepultz/netdns2/issues/182)
 - ~~The `DoH` test currenly cannot check servers that have `self-signed certificates` because the `cURL` options cannot be configured to relax it's peer checks.~~
-  - This is and issue with **netdns2** and I have reported the issue here [netdns2: Option to disable VERIFYPEER and VERIFYHOST for DoH requests](https://github.com/mikepultz/netdns2/issues/184)
+  - This is an issue with **netdns2** and I have reported the issue here [netdns2: Option to disable VERIFYPEER and VERIFYHOST for DoH requests](https://github.com/mikepultz/netdns2/issues/184)
   - I have added a workaround using static variables. Search for `// Temporary Workaround - DoH Peer Verification`
 - This inspector cannot use the `Source IP` from the DNS response packet to determine if a request has been redirected because the information is lost in the discovery process of **netdns2**
-  - This is and issue with **netdns2** and I have done a feature request here [netdns2: answer_from assumes the response comes from the supplied nameserver](https://github.com/mikepultz/netdns2/issues/183)
+  - This is an issue with **netdns2** and I have done a feature request here [netdns2: answer_from assumes the response comes from the supplied nameserver](https://github.com/mikepultz/netdns2/issues/183)
 
 ## Compatibility
 This will work on most computers.
