@@ -198,13 +198,16 @@ class Inspector {
 
         catch(\NetDNS2\Exception $e)
         {
+            // Reference only - Compare exception codes to the ENUM type class, error
+            //if($e->getCode() === \NetDNS2\ENUM\Error::DNS_NXDOMAIN){};
+
             // Workaround for GitHub #182 (DoH uses cURL so is not an issue)
             if($requestType === 'dot' && $verifyPeer && empty($e->getMessage())){
                 $workaround = 'No Native error, most likely:<br><br>Error [tls]: A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider. (os error -2146762487)';
             }
 
-            // Set NXDOMAIN as needed (I do it this way because I do not know how to get test NXDOMAIN from the response)
-            if($e->getMessage() == 'DNS request failed: The domain name referenced in the query does not exist.'){
+            // Set NXDOMAIN as needed - 'DNS request failed: The domain name referenced in the query does not exist.'
+            if($e->getCode() == 3){
                 $result['NXDOMAIN'] = true;
             }
 
@@ -252,13 +255,13 @@ class Inspector {
     private function buildForm(){
 
         // Use default values if none are submitted via $_POST
-        $this->testDomain ?? $_POST['testDomain'] ?? $this->testDomain;
-        $this->nameserverInternalStandard ?? $_POST['testDomain'] ?? $this->nameserverInternalStandard;
-        $this->nameserverInternalDot ?? $_POST['testDomain'] ?? $this->nameserverInternalDot;
-        $this->nameserverInternalDoh ?? $_POST['testDomain'] ?? $this->nameserverInternalDoh;
-        $this->nameserverExternalStandard ?? $_POST['testDomain'] ?? $this->nameserverExternalStandard;
-        $this->nameserverExternalDot ?? $_POST['testDomain'] ?? $this->nameserverExternalDot;
-        $this->nameserverExternalDoh ?? $_POST['testDomain'] ?? $this->nameserverExternalDoh;
+        $this->testDomain                   = $_POST['testDomain']                  ?? $this->testDomain;
+        $this->nameserverInternalStandard   = $_POST['nameserverInternalStandard']  ?? $this->nameserverInternalStandard;
+        $this->nameserverInternalDot        = $_POST['nameserverInternalDot']       ?? $this->nameserverInternalDot;
+        $this->nameserverInternalDoh        = $_POST['nameserverInternalDoh']       ?? $this->nameserverInternalDoh;
+        $this->nameserverExternalStandard   = $_POST['nameserverExternalStandard']  ?? $this->nameserverExternalStandard;
+        $this->nameserverExternalDot        = $_POST['nameserverExternalDot']       ?? $this->nameserverExternalDot;
+        $this->nameserverExternalDoh        = $_POST['nameserverExternalDoh']       ?? $this->nameserverExternalDoh;
 
         $this->output .= <<<FORM
             <div id="userForm">
@@ -281,7 +284,7 @@ class Inspector {
             </tr>
             <tr>
             <td><label for="nameserverInternalDoh">Nameserver Internal DoH:</label></td>
-            <td><input type="text" name="nameserverInternalDoh" value="$this->nameserverInternalDoh " placeholder="https://10.0.0.1/dns-query" required></td>
+            <td><input type="text" name="nameserverInternalDoh" value="$this->nameserverInternalDoh" placeholder="https://10.0.0.1/dns-query" required></td>
             </tr>
             <tr>
             <td><label for="nameserverExternalStandard">Nameserver External Standard:</label></td>
@@ -355,14 +358,15 @@ class Inspector {
         <ul style="list-style-type: none;">
         <li><span class="legendBlocks success"></span> = Response received.</li>
         <li><span class="legendBlocks redirected"></span> = Response received, but the request was redirected.</li>
-        <li><span class="legendBlocks failed"></span> = Request was Blocked or Failed.</li>
+        <li><span class="legendBlocks failed"></span> = Request was blocked or failed.</li>
         </ul>
         </div>
         <h2>DNS Hijacking Status = $this->dnsHijackingStatus</h2>
         </div>
-    RESULTS;
+        RESULTS;
 
     }
+
     /**
      * Output common html to screen
      *
