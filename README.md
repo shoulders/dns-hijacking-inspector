@@ -7,11 +7,11 @@ It will test if `Standard (53)`, `DoT (853)`, `DoH(80)` DNS requests pointed to 
 
 Once the test is complete it will give you an analysis of the tests with specific information about each type of DNS request.
 
-## Prerequsites
+## Prerequisites
 You need the following:
 - Your router must support `Domain Overrides` or have a `hosts file` you can edit.
-- Webserver
-  - on your local network
+- A web server
+  - available on your local network (for example, XAMPP)
   - running PHP 8.1+
 - PHP must have the following extensions installed and loaded
   - OpenSSL
@@ -20,8 +20,8 @@ You need the following:
   - Intl
 
 ## How to use this software
-- Add a fake domain to your routers DNS server `Domain Overrides` or `hosts file` (e.g. `madeup123abc.com` / `10.0.0.50`)
-- Extract `dns-hijacking-inspecto` to a folder of your choice on your Webserver
+- Add a fake domain to your router's DNS server by using `Domain Overrides` or a `hosts file` (e.g. `madeup123abc.com` / `10.0.0.50`)
+- Extract `dns-hijacking-inspector` to a folder of your choice on your web server
 - Configure the settings in `inspector.php` as required
 - Load `inspector.php`
 - Read the results
@@ -33,7 +33,7 @@ You need the following:
   - If this is enabled, then a form will appear for you to manually enter your details, otherwise the script will pull them directly from the it's settings and then automatically run itself.
 
 ### Script and Form
-- **Test Domain:** This is the fake non-existant domain defined in your routers `Domain Overrides` or `hosts file` which is needed to test for DNS request redirects.
+- **Test Domain:** This is the fake non-existent domain defined in your router's `Domain Overrides` or `hosts file` which is needed to test for DNS request redirects.
 - **Nameserver Internal Standard:** The IP address of a `Standard DNS (53)` server on your local network.
   - This is most likely your router's IP.
 - **Nameserver Internal DoT:** The IP address of a `DoT (853)` server on your local network.
