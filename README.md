@@ -11,7 +11,7 @@ Once the test is complete it will give you an analysis of the tests with specifi
 You need the following:
 - Your router must support `Domain Overrides` or have a `hosts file` you can edit.
 - Webserver
-  - on your local network
+  - on your local network (e.g. Xampp)
   - running PHP 8.1+
 - PHP must have the following extensions installed and loaded
   - OpenSSL
@@ -21,7 +21,7 @@ You need the following:
 
 ## How to use this software
 - Add a fake domain to your routers DNS server `Domain Overrides` or `hosts file` (e.g. `madeup123abc.com` / `10.0.0.50`)
-- Extract `dns-hijacking-inspecto` to a folder of your choice on your Webserver
+- Extract `dns-hijacking-inspector` to a folder of your choice on your Webserver
 - Configure the settings in `inspector.php` as required
 - Load `inspector.php`
 - Read the results
